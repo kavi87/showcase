@@ -1,0 +1,21 @@
+{
+    "w20-core": {
+        "modules": {
+            "security": {
+                "redirectAfterLogin": "/seed-store-admin/products",
+                "autoLogin": true
+            }
+        }
+    },
+
+    "w20-ui" : {
+        "modules" : {
+            "notifications":{},
+            "grid":{}
+        }
+    },
+
+    "w20-dataviz" : {},
+
+    "fragments/seed-store/seed-store-admin.w20.json" : {}
+}

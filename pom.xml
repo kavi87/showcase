@@ -1,0 +1,72 @@
+<!--
+
+    Copyright (c) 2013-2015 by The SeedStack authors. All rights reserved.
+
+    This file is part of SeedStack, An enterprise-oriented full development stack.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.seedstack</groupId>
+        <artifactId>java-parent</artifactId>
+        <version>2.0.0-M1-SNAPSHOT</version>
+    </parent>
+
+    <packaging>pom</packaging>
+    <groupId>org.seedstack.samples</groupId>
+    <artifactId>showcase</artifactId>
+    <version>2.0.0-M1-SNAPSHOT</version>
+
+    <properties>
+        <ecommerce-domain.version>2.0.0-M1-SNAPSHOT</ecommerce-domain.version>
+        <seedstack-distribution.version>15.4-M1-SNAPSHOT</seedstack-distribution.version>
+    </properties>
+
+    <modules>
+        <module>app</module>
+        <module>web</module>
+    </modules>
+
+     <build>
+         <plugins>
+             <plugin>
+                 <groupId>com.mycila</groupId>
+                 <artifactId>license-maven-plugin</artifactId>
+                 <executions>
+                     <execution>
+                         <id>check-license-header</id>
+                         <phase>none</phase>
+                     </execution>
+                 </executions>
+             </plugin>
+             <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>license-maven-plugin</artifactId>
+                 <executions>
+                     <execution>
+                         <id>check-license-compliance</id>
+                         <phase>none</phase>
+                     </execution>
+                 </executions>
+             </plugin>
+         </plugins>
+     </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.seedstack</groupId>
+                <artifactId>seedstack-bom</artifactId>
+                <version>${seedstack-distribution.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>  
+</project>

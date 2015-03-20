@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    Copyright (c) 2013-2015 by The SeedStack authors. All rights reserved.
+
+    This file is part of SeedStack, An enterprise-oriented full development stack.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+-->
+<xs:schema version="1.0" targetNamespace="http://seedstack.org/wsdl/seed/ProductInfo/" xmlns:tns="http://seedstack.org/wsdl/seed/ProductInfo/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="NumberFormat" nillable="true" type="tns:NumberFormat"/>
+
+  <xs:element name="productInfoByID" type="tns:productInfoByID"/>
+
+  <xs:element name="productInfoByIDResponse" type="tns:productInfoByIDResponse"/>
+
+  <xs:complexType name="productInfoByID">
+    <xs:sequence>
+      <xs:element name="idProduct" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="productInfoByIDResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:productInfo" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="productInfo">
+    <xs:sequence>
+      <xs:element name="categoryId" type="xs:long" minOccurs="0"/>
+      <xs:element name="designation" type="xs:string" minOccurs="0"/>
+      <xs:element name="details" type="xs:string" minOccurs="0"/>
+      <xs:element name="entityId" type="xs:long" minOccurs="0"/>
+      <xs:element name="picture" type="xs:string" minOccurs="0"/>
+      <xs:element name="price" type="xs:double" minOccurs="0"/>
+      <xs:element name="summary" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="NumberFormat">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

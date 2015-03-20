@@ -1,0 +1,77 @@
+{
+    "id": "seed-store-admin",
+    "name": "SEED store admin",
+    "modules": {
+        "categories": {
+            "path": "{seed-store-admin}/modules/categories",
+            "autoload": true,
+            "config": {
+                "apiUrl": "${seed-rest-path}"
+            }
+        },
+        "customers": {
+            "path": "{seed-store-admin}/modules/customers",
+            "autoload": true,
+            "config": {
+                "apiUrl": "${seed-rest-path}"
+            }
+        },
+        "products": {
+            "path": "{seed-store-admin}/modules/products",
+            "autoload": true,
+            "config": {
+                "apiUrl": "${seed-rest-path}"
+            }
+        },
+        "directives": {
+            "path": "{seed-store-admin}/modules/directives",
+            "autoload": true
+        },
+        "common-style": {
+            "path": "[css]!{seed-store-admin}/style/common.css",
+            "autoload": true
+        },
+        "customer-style": {
+            "path": "[css]!{seed-store-admin}/style/customer.css",
+            "autoload": true
+        },
+        "products-style": {
+            "path": "[css]!{seed-store-admin}/style/products.css",
+            "autoload": true
+        },
+        "category-style": {
+            "path": "[css]!{seed-store-admin}/style/category.css",
+            "autoload": true
+        }
+    },
+    "i18n": {
+        "en": [ "{seed-store-admin}/i18n/messages-en.json" ]
+    },
+
+    "routes": {
+        "home": {
+            "templateUrl": "{seed-store-admin}/views/home.html",
+            "category": "admin",
+            "hidden": true,
+            "security": "isAuthenticated()"
+        },
+        "customers": {
+            "templateUrl": "{seed-store-admin}/views/customers-management.html",
+            "controller": "SeedStoreCustomersManagementController",
+            "category": "admin",
+            "security": "isAuthenticated()"
+        },
+        "products": {
+            "templateUrl": "{seed-store-admin}/views/products-management.html",
+            "controller": "SeedStoreProductsManagementController",
+            "category": "admin",
+            "security": "isAuthenticated()"
+        },
+        "categories": {
+            "templateUrl": "{seed-store-admin}/views/category-management.html",
+            "controller": "SeedStoreCategoryManagementController",
+            "category": "admin",
+            "security": "isAuthenticated()"
+        }
+    }
+}

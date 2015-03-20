@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2013-2015 by The SeedStack authors. All rights reserved.
+
+    This file is part of SeedStack, An enterprise-oriented full development stack.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+-->
+<!DOCTYPE sun-web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Application Server 8.1 Servlet 2.4//EN" "http://www.sun.com/software/appserver/dtds/sun-web-app_2_4-1.dtd">
+<sun-web-app>
+<!--     <resource-ref> -->
+<!--         <res-ref-name>jdbc/seed-ecommerce-domain-ds</res-ref-name> -->
+<!--         <jndi-name>jdbc/seed-ecommerce-domain-ds</jndi-name> -->
+<!--     </resource-ref> -->
+</sun-web-app>

@@ -1,0 +1,75 @@
+#
+# Copyright (c) 2013-2015 by The SeedStack authors. All rights reserved.
+#
+# This file is part of SeedStack, An enterprise-oriented full development stack.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+[org.seedstack.seed]
+core.application-id = seedstack-showcase-web
+core.application-name = SeedStack store management
+persistence.jpa.units = seed-ecommerce-domain,seed-i18n-domain
+mail.providers = smtp-mycompany
+shell.enabled = true
+
+####################################################################
+# security
+####################################################################
+[org.seedstack.seed.security]
+realms = ConfigurationRealm
+ConfigurationRealm.role-mapping = ConfigurationRoleMapping
+ConfigurationRealm.role-permission-resolver = ConfigurationRolePermissionResolver
+
+[org.seedstack.seed.security.users]
+jane = password, SEED.TRANSLATOR
+john = password, SEED.DEVELOPER
+admin = password, SEED.TRANSLATOR, SEED.DEVELOPER,SEED.MONITORING
+
+[org.seedstack.seed.security.roles]
+developer = SEED.DEVELOPER
+translator = SEED.TRANSLATOR
+monitoring= SEED.MONITORING
+
+[org.seedstack.seed.security.permissions]
+translator = seed:i18n:translation:read,seed:i18n:translation:write,seed:i18n:translation:delete,seed:i18n:key:read,seed:i18n:locale:read,seed:i18n:locale:write,seed:i18n:locale:delete
+developer = seed:i18n:translation:read,seed:i18n:key:read,seed:i18n:key:write,seed:i18n:key:delete,seed:i18n:locale:read
+monitoring= seed:monitoring:batch:read
+
+####################################################################
+# persistence
+####################################################################
+[org.seedstack.seed.persistence.jpa.unit.seed-ecommerce-domain.property]
+javax.persistence.jdbc.driver = org.hsqldb.jdbcDriver
+javax.persistence.jdbc.url = jdbc:hsqldb:mem:seedstackstore
+javax.persistence.jdbc.user = sa
+javax.persistence.jdbc.password =
+hibernate.dialect = org.hibernate.dialect.HSQLDialect
+hibernate.hbm2ddl.auto = update
+sql.enforce_strict_size = true
+
+[org.seedstack.seed.persistence.jpa.unit.seed-i18n-domain.property]
+javax.persistence.jdbc.driver = org.hsqldb.jdbcDriver
+javax.persistence.jdbc.url = jdbc:hsqldb:mem:seedstackstore
+javax.persistence.jdbc.user = sa
+javax.persistence.jdbc.password =
+hibernate.dialect = org.hibernate.dialect.H2Dialect
+hibernate.hbm2ddl.auto = update
+sql.enforce_strict_size = true
+
+
+####################################################################
+# mail
+####################################################################
+[org.seedstack.seed.mail.provider.smtp-mycompany.property]
+mail.transport.protocol = smtp
+mail.smtp.host = smtp.mycompany.com
+mail.smtp.port = 25
+
+[seedstore.mail.activation]
+template = mailTemplate.vm
+subject = Activation of your account
+from = mng@seedstore.com
+

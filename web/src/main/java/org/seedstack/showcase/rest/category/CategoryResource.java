@@ -1,0 +1,200 @@
+/**
+ * Copyright (c) 2013-2015 by The SeedStack authors. All rights reserved.
+ *
+ * This file is part of SeedStack, An enterprise-oriented full development stack.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+package org.seedstack.showcase.rest.category;
+
+import org.apache.commons.lang.StringUtils;
+import org.javatuples.Pair;
+import org.seedstack.business.api.interfaces.assembler.Assemblers;
+import org.seedstack.business.api.interfaces.query.range.Range;
+import org.seedstack.business.api.interfaces.query.result.Result;
+import org.seedstack.business.api.interfaces.query.view.chunk.ChunkedView;
+import org.seedstack.business.api.interfaces.query.view.page.PaginatedView;
+import org.seedstack.samples.ecommerce.domain.category.Category;
+import org.seedstack.samples.ecommerce.domain.category.CategoryRepository;
+import org.seedstack.seed.persistence.jpa.api.JpaUnit;
+import org.seedstack.seed.transaction.api.Transactional;
+import org.seedstack.showcase.rest.product.ProductFinder;
+import org.seedstack.showcase.rest.product.ProductRepresentation;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * A REST resource to manage categories.
+ */
+@Path("/categories")
+@Transactional
+@JpaUnit("seed-ecommerce-domain")
+public class CategoryResource {
+
+    @Inject
+    private CategoryFinder categoryFinder;
+
+    @Inject
+    private CategoryRepository categoryRepository;
+
+    @Inject
+    private ProductFinder productFinder;
+
+    @Inject
+    private Assemblers assemblers;
+
+    @Context
+    private UriInfo uriInfo;
+
+    /**
+     * Gets the category list with pagination and search parameters.
+     *
+     * @param searchString the search string
+     * @param pageIndex    the page index
+     * @param pageSize     the page size
+     * @param chunkOffset  the chunk offset
+     * @param chunkSize    the chunk size
+     * @return the paginated list of categories
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response list(@QueryParam("searchString") String searchString,
+                         @QueryParam("pageIndex") Long pageIndex,
+                         @QueryParam("pageSize") Integer pageSize,
+                         @QueryParam("chunkOffset") Long chunkOffset,
+                         @QueryParam("chunkSize") Integer chunkSize) {
+
+        Map<String, Object> criteria = new HashMap<String, Object>();
+
+        // criteria map is used to build where clause
+        if (StringUtils.isNotEmpty(searchString)) {
+            // with field names and values for equal : ie. put(field,value)
+            criteria.put("categoryId", new Pair<String, String>("like", "'%" + searchString + "%'"));
+            // else a Pair is required to provide the expected operator (eg.
+            // "like") : ie. put(field, Pair(operator,value))
+            criteria.put("name", new Pair<String, String>("like", "'%" + searchString + "%'"));
+        }
+
+        // use pages
+        if (pageIndex != null && pageSize != null) {
+            Range range = Range.rangeFromPageInfo(pageIndex, pageSize);
+            Result<CategoryRepresentation> result = categoryFinder.findAllCategory(range, criteria);
+
+            PaginatedView<CategoryRepresentation> paginatedView = new PaginatedView<CategoryRepresentation>(result, pageSize, pageIndex);
+            return Response.ok(paginatedView).build();
+        }
+
+        // or use chunks
+        if (chunkOffset != null && chunkSize != null) {
+            Range range = Range.rangeFromChunkInfo(chunkOffset, chunkSize);
+            Result<CategoryRepresentation> result = categoryFinder.findAllCategory(range, criteria);
+
+            ChunkedView<CategoryRepresentation> chunkedView = new ChunkedView<CategoryRepresentation>(result, chunkOffset, chunkSize);
+            return Response.ok(chunkedView).build();
+        }
+
+        return Response.ok(categoryFinder.findAllCategory()).build();
+    }
+
+    /**
+     * Gets the products of a specific category
+     *
+     * @param categoryId the category id
+     * @return the paginated list of products by category
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{categoryId}/products")
+    public Response listProductByCategory(@PathParam("categoryId") Long categoryId,
+            @DefaultValue("0") @QueryParam("pageIndex") int pageIndex,
+            @DefaultValue("10") @QueryParam("pageSize") int pageSize) {
+
+        Map<String, Object> criteria = new HashMap<String, Object>();
+        if (categoryId != null) {
+            criteria.put("categoryId", categoryId); // add a criteria to filter on categories
+        }
+
+        Result<ProductRepresentation> result = productFinder.findAllProducts(Range.rangeFromPageInfo(pageIndex, pageSize), criteria);
+        PaginatedView<ProductRepresentation> paginatedView = new PaginatedView<ProductRepresentation>(result, pageSize, pageIndex);
+
+        return Response.ok(paginatedView).build();
+    }
+
+    /**
+     * Creates a category
+     *
+     * @param categoryRepresentation the category representation
+     * @return the created category
+     */
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response add(CategoryRepresentation categoryRepresentation) {
+        Category category = assemblers.createThenMergeAggregateWithDto(categoryRepresentation, Category.class);
+        categoryRepository.persistCategory(category);
+
+        CategoryRepresentation categoryRepresentation1;
+        categoryRepresentation1= assemblers.assembleDtoFromAggregate(CategoryRepresentation.class, category);
+
+        return Response.created(URI.create(uriInfo.getRequestUri() + "/" + category.getEntityId()))
+                .entity(categoryRepresentation1).build();
+    }
+
+    /**
+     * Updates a category.
+     *
+     * @param categoryRepresentation the category representation
+     * @param categoryId             the category id
+     * @return the updated category or 400 if the request was malformed or 404 if the category doesn't exist
+     */
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{categoryId}")
+    public Response update(CategoryRepresentation categoryRepresentation,
+                           @PathParam("categoryId") long categoryId) {
+        if (categoryRepresentation.getId() != categoryId) { // bad request: the ids don't match
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN_TYPE).entity("Category identifier cannot be updated").build();
+        }
+        Category category = assemblers.retrieveThenMergeAggregateWithDto(categoryRepresentation, Category.class);
+        if (category == null) { // this category is not found
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        category = categoryRepository.saveCategory(category);
+
+        CategoryRepresentation categoryRepresentation1;
+        categoryRepresentation1 = assemblers.assembleDtoFromAggregate(CategoryRepresentation.class, category);
+
+        return Response.ok(URI.create(uriInfo.getRequestUri() + "/" + category.getEntityId()))
+                .entity(categoryRepresentation1).build();
+    }
+
+    /**
+     * Deletes a category.
+     *
+     * @param categoryId the category id
+     * @return ok or 404 if the category doesn't exist
+     */
+    @DELETE
+    @Path("/{categoryId}")
+    public Response deleteCategory(@PathParam("categoryId") long categoryId) {
+        Category category = categoryRepository.load(categoryId);
+        if (category != null) {
+            categoryRepository.delete(category);
+        } else { // can't delete a nonexistent category
+            Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok().build();
+    }
+}
