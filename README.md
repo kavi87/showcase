@@ -1,7 +1,18 @@
-SeedStack showcase sample [![Build status](https://travis-ci.org/seedstack/showcase.svg?branch=master)](https://travis-ci.org/seedstack/showcase)
-==============
+# SeedStack showcase sample [![Build status](https://travis-ci.org/seedstack/showcase.svg?branch=master)](https://travis-ci.org/seedstack/showcase)
 
-This project is a sample to show to the seed stack features.
+Showcase based on the [e-commerce domain model](https://github.com/seedstack/ecommerce-domain-sample), demonstrating basic SeedStack features.
+
+# Try it
+
+If you have [Maven](http://maven.apache.org/) installed, you can clone the repository and run it locally with the maven Jetty plugin:
+
+    git clone https://github.com/seedstack/showcase.git
+    cd showcase
+    mvn install && cd web && mvn jetty:run
+    
+Or you can simply run it on Heroku by clicking this button:
+
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 # Copyright and license
 
