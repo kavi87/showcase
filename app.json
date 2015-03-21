@@ -1,0 +1,6 @@
+{
+  "name": "SeedStack showcase",
+  "description": "Showcase based on the e-commerce domain model, demonstrating basic SeedStack features.",
+  "repository": "https://github.com/seedstack/showcase",
+  "keywords": ["seedstack", "showcase", "sample"]
+}

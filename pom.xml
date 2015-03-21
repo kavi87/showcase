@@ -26,6 +26,7 @@
     <properties>
         <ecommerce-domain.version>2.0.0-M1-SNAPSHOT</ecommerce-domain.version>
         <seedstack-distribution.version>15.4-M1-SNAPSHOT</seedstack-distribution.version>
+        <javadoc.doclint.none/>
     </properties>
 
     <modules>
@@ -55,8 +56,56 @@
                      </execution>
                  </executions>
              </plugin>
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-dependency-plugin</artifactId>
+                 <executions>
+                     <execution>
+                         <phase>package</phase>
+                         <goals><goal>copy</goal></goals>
+                         <configuration>
+                             <artifactItems>
+                                 <artifactItem>
+                                     <groupId>com.github.jsimone</groupId>
+                                     <artifactId>webapp-runner</artifactId>
+                                     <version>7.0.57.2</version>
+                                     <destFileName>webapp-runner.jar</destFileName>
+                                 </artifactItem>
+                             </artifactItems>
+                         </configuration>
+                     </execution>
+                 </executions>
+             </plugin>
+             <plugin>
+                 <artifactId>maven-javadoc-plugin</artifactId>
+                 <version>${maven-javadoc-plugin.version}</version>
+                 <executions>
+                     <execution>
+                         <id>attach-javadoc</id>
+                         <phase>package</phase>
+                         <goals>
+                             <goal>jar</goal>
+                         </goals>
+                         <configuration>
+                             <additionalparam>${javadoc.doclint.none}</additionalparam>
+                         </configuration>
+                     </execution>
+                 </executions>
+             </plugin>
          </plugins>
      </build>
+
+    <profiles>
+        <profile>
+            <id>java8-disable-strict-javadoc</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -68,5 +117,32 @@
                 <scope>import</scope>
             </dependency>
         </dependencies>
-    </dependencyManagement>  
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
