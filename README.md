@@ -4,7 +4,7 @@ Showcase based on the [e-commerce domain model](https://github.com/seedstack/eco
 
 # Try it
 
-If you have [Maven](http://maven.apache.org/) installed, you can clone the repository and run it locally with the maven Jetty plugin:
+If you have [Maven 3](http://maven.apache.org/) installed, you can clone the repository and run it locally with the maven Jetty plugin:
 
     git clone https://github.com/seedstack/showcase.git
     cd showcase
