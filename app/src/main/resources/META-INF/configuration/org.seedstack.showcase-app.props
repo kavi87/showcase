@@ -11,53 +11,68 @@
 [org.seedstack.seed]
 core.application-id = seedstack-showcase-web
 core.application-name = SeedStack store management
-persistence.jpa.units = seed-ecommerce-domain,seed-i18n-domain
 mail.providers = smtp-mycompany
 shell.enabled = true
 
 ####################################################################
 # security
 ####################################################################
+
+# Define the real to use
 [org.seedstack.seed.security]
 realms = ConfigurationRealm
 ConfigurationRealm.role-mapping = ConfigurationRoleMapping
 ConfigurationRealm.role-permission-resolver = ConfigurationRolePermissionResolver
 
+# Define the users, their password and their application role
 [org.seedstack.seed.security.users]
 jane = password, SEED.TRANSLATOR
 john = password, SEED.DEVELOPER
 admin = password, SEED.TRANSLATOR, SEED.DEVELOPER,SEED.MONITORING
 
+# Bind the function roles to the application roles
 [org.seedstack.seed.security.roles]
-developer = SEED.DEVELOPER
-translator = SEED.TRANSLATOR
+seed-i18n.reader = SEED.DEVELOPER
+seed-i18n.translator = SEED.TRANSLATOR
 monitoring= SEED.MONITORING
-
-[org.seedstack.seed.security.permissions]
-translator = seed:i18n:translation:read,seed:i18n:translation:write,seed:i18n:translation:delete,seed:i18n:key:read,seed:i18n:locale:read,seed:i18n:locale:write,seed:i18n:locale:delete
-developer = seed:i18n:translation:read,seed:i18n:key:read,seed:i18n:key:write,seed:i18n:key:delete,seed:i18n:locale:read
-monitoring= seed:monitoring:batch:read
 
 ####################################################################
 # persistence
 ####################################################################
-[org.seedstack.seed.persistence.jpa.unit.seed-ecommerce-domain.property]
-javax.persistence.jdbc.driver = org.hsqldb.jdbcDriver
-javax.persistence.jdbc.url = jdbc:hsqldb:mem:seedstackstore
-javax.persistence.jdbc.user = sa
-javax.persistence.jdbc.password =
-hibernate.dialect = org.hibernate.dialect.HSQLDialect
-hibernate.hbm2ddl.auto = update
-sql.enforce_strict_size = true
 
-[org.seedstack.seed.persistence.jpa.unit.seed-i18n-domain.property]
-javax.persistence.jdbc.driver = org.hsqldb.jdbcDriver
-javax.persistence.jdbc.url = jdbc:hsqldb:mem:seedstackstore
-javax.persistence.jdbc.user = sa
-javax.persistence.jdbc.password =
-hibernate.dialect = org.hibernate.dialect.H2Dialect
-hibernate.hbm2ddl.auto = update
-sql.enforce_strict_size = true
+# List the datasource and JPA unit
+[org.seedstack.seed]
+persistence.jdbc.datasources = showcase-datasource
+persistence.jpa.units = seed-ecommerce-domain, seed-i18n-domain
+
+# Configure the application datasource
+[org.seedstack.seed.persistence.jdbc.datasource.showcase-datasource]
+provider = HikariDataSourceProvider
+driver = org.hsqldb.jdbcDriver
+url = jdbc:hsqldb:mem:seedstackstore
+user = sa
+password =
+property.sql.enforce_strict_size = true
+
+# Configure the ecommerce JPA unit
+[org.seedstack.seed.persistence.jpa.unit.seed-ecommerce-domain]
+datasource = showcase-datasource
+property.hibernate.dialect = org.hibernate.dialect.HSQLDialect
+property.hibernate.hbm2ddl.auto = update
+
+# Configure the i18n JPA unit
+[org.seedstack.seed.persistence.jpa.unit.seed-i18n-domain]
+datasource = showcase-datasource
+property.hibernate.dialect = org.hibernate.dialect.HSQLDialect
+property.hibernate.hbm2ddl.auto = update
+
+# Specify the packages to scan for the i18n unit
+[org.seedstack.function.i18n.internal.domain.*]
+jpa-unit = seed-i18n-domain
+
+# Specify the packages to scan for the ecommerce domain
+[org.seedstack.samples.ecommerce.*]
+jpa-unit = seed-ecommerce-domain
 
 
 ####################################################################
