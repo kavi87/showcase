@@ -11,12 +11,12 @@ package org.seedstack.showcase.infrastructure.finders;
 
 import org.apache.commons.collections.MapUtils;
 import org.javatuples.Pair;
-import org.seedstack.business.api.interfaces.assembler.Assemblers;
+import org.seedstack.business.api.interfaces.assembler.FluentAssembler;
 import org.seedstack.business.api.interfaces.query.range.Range;
 import org.seedstack.business.api.interfaces.query.result.Result;
 import org.seedstack.business.jpa.interfaces.query.finder.BaseSimpleJpaFinder;
 import org.seedstack.samples.ecommerce.domain.category.Category;
-import org.seedstack.showcase.rest.category.CategoryFinder;
+import org.seedstack.showcase.rest.category.CategoryRepresentationFinder;
 import org.seedstack.showcase.rest.category.CategoryRepresentation;
 
 import javax.inject.Inject;
@@ -28,18 +28,18 @@ import java.util.Map;
 /**
  * Category Finder JPA Implementation.
  */
-public class JpaCategoryfinder extends BaseSimpleJpaFinder<CategoryRepresentation> implements CategoryFinder {
+public class JpaCategoryfinder extends BaseSimpleJpaFinder<CategoryRepresentation> implements CategoryRepresentationFinder {
 
 	@Inject
 	private EntityManager entityManager;
 	@Inject
-	private Assemblers categoryAssembler;
+	private FluentAssembler fluentAssembler;
 
 	@Override
 	public CategoryRepresentation findCategoryById(long value) {
 		Category category = entityManager.find(Category.class, value);
 		if (category != null){
-			return categoryAssembler.assembleDtoFromAggregate(CategoryRepresentation.class, category);
+			return fluentAssembler.assemble().aggregate(category).to(CategoryRepresentation.class);
 		}
 		return null;
 	}

@@ -11,7 +11,8 @@ package org.seedstack.showcase.rest.category;
 
 import org.apache.commons.lang.StringUtils;
 import org.javatuples.Pair;
-import org.seedstack.business.api.interfaces.assembler.Assemblers;
+import org.seedstack.business.api.interfaces.assembler.FluentAssembler;
+import org.seedstack.business.api.interfaces.assembler.dsl.AggregateNotFoundException;
 import org.seedstack.business.api.interfaces.query.range.Range;
 import org.seedstack.business.api.interfaces.query.result.Result;
 import org.seedstack.business.api.interfaces.query.view.chunk.ChunkedView;
@@ -20,11 +21,20 @@ import org.seedstack.samples.ecommerce.domain.category.Category;
 import org.seedstack.samples.ecommerce.domain.category.CategoryRepository;
 import org.seedstack.seed.persistence.jpa.api.JpaUnit;
 import org.seedstack.seed.transaction.api.Transactional;
-import org.seedstack.showcase.rest.product.ProductFinder;
 import org.seedstack.showcase.rest.product.ProductRepresentation;
+import org.seedstack.showcase.rest.product.ProductRepresentationFinder;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -42,16 +52,16 @@ import java.util.Map;
 public class CategoryResource {
 
     @Inject
-    private CategoryFinder categoryFinder;
+    private CategoryRepresentationFinder categoryRepresentationFinder;
 
     @Inject
     private CategoryRepository categoryRepository;
 
     @Inject
-    private ProductFinder productFinder;
+    private ProductRepresentationFinder productRepresentationFinder;
 
     @Inject
-    private Assemblers assemblers;
+    private FluentAssembler fluentAssembler;
 
     @Context
     private UriInfo uriInfo;
@@ -88,7 +98,7 @@ public class CategoryResource {
         // use pages
         if (pageIndex != null && pageSize != null) {
             Range range = Range.rangeFromPageInfo(pageIndex, pageSize);
-            Result<CategoryRepresentation> result = categoryFinder.findAllCategory(range, criteria);
+            Result<CategoryRepresentation> result = categoryRepresentationFinder.findAllCategory(range, criteria);
 
             PaginatedView<CategoryRepresentation> paginatedView = new PaginatedView<CategoryRepresentation>(result, pageSize, pageIndex);
             return Response.ok(paginatedView).build();
@@ -97,13 +107,13 @@ public class CategoryResource {
         // or use chunks
         if (chunkOffset != null && chunkSize != null) {
             Range range = Range.rangeFromChunkInfo(chunkOffset, chunkSize);
-            Result<CategoryRepresentation> result = categoryFinder.findAllCategory(range, criteria);
+            Result<CategoryRepresentation> result = categoryRepresentationFinder.findAllCategory(range, criteria);
 
             ChunkedView<CategoryRepresentation> chunkedView = new ChunkedView<CategoryRepresentation>(result, chunkOffset, chunkSize);
             return Response.ok(chunkedView).build();
         }
 
-        return Response.ok(categoryFinder.findAllCategory()).build();
+        return Response.ok(categoryRepresentationFinder.findAllCategory()).build();
     }
 
     /**
@@ -116,15 +126,16 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{categoryId}/products")
     public Response listProductByCategory(@PathParam("categoryId") Long categoryId,
-            @DefaultValue("0") @QueryParam("pageIndex") int pageIndex,
-            @DefaultValue("10") @QueryParam("pageSize") int pageSize) {
+                                          @DefaultValue("0") @QueryParam("pageIndex") int pageIndex,
+                                          @DefaultValue("10") @QueryParam("pageSize") int pageSize) {
 
         Map<String, Object> criteria = new HashMap<String, Object>();
+
         if (categoryId != null) {
             criteria.put("categoryId", categoryId); // add a criteria to filter on categories
         }
 
-        Result<ProductRepresentation> result = productFinder.findAllProducts(Range.rangeFromPageInfo(pageIndex, pageSize), criteria);
+        Result<ProductRepresentation> result = productRepresentationFinder.findAllProducts(Range.rangeFromPageInfo(pageIndex, pageSize), criteria);
         PaginatedView<ProductRepresentation> paginatedView = new PaginatedView<ProductRepresentation>(result, pageSize, pageIndex);
 
         return Response.ok(paginatedView).build();
@@ -140,14 +151,13 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response add(CategoryRepresentation categoryRepresentation) {
-        Category category = assemblers.createThenMergeAggregateWithDto(categoryRepresentation, Category.class);
+        Category category = fluentAssembler.assemble().dto(categoryRepresentation).to(Category.class).fromFactory();
         categoryRepository.persistCategory(category);
 
         CategoryRepresentation categoryRepresentation1;
-        categoryRepresentation1= assemblers.assembleDtoFromAggregate(CategoryRepresentation.class, category);
+        categoryRepresentation1 = fluentAssembler.assemble().aggregate(category).to(CategoryRepresentation.class);
 
-        return Response.created(URI.create(uriInfo.getRequestUri() + "/" + category.getEntityId()))
-                .entity(categoryRepresentation1).build();
+        return Response.created(URI.create(uriInfo.getRequestUri() + "/" + category.getEntityId())).entity(categoryRepresentation1).build();
     }
 
     /**
@@ -161,23 +171,25 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{categoryId}")
-    public Response update(CategoryRepresentation categoryRepresentation,
-                           @PathParam("categoryId") long categoryId) {
+    public Response update(CategoryRepresentation categoryRepresentation, @PathParam("categoryId") long categoryId) {
         if (categoryRepresentation.getId() != categoryId) { // bad request: the ids don't match
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .type(MediaType.TEXT_PLAIN_TYPE).entity("Category identifier cannot be updated").build();
+            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).entity("Category identifier cannot be updated").build();
         }
-        Category category = assemblers.retrieveThenMergeAggregateWithDto(categoryRepresentation, Category.class);
-        if (category == null) { // this category is not found
+
+        Category category;
+        try {
+            category = fluentAssembler.assemble().dto(categoryRepresentation).to(Category.class).fromRepository().orFail();
+        } catch (AggregateNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         category = categoryRepository.saveCategory(category);
 
-        CategoryRepresentation categoryRepresentation1;
-        categoryRepresentation1 = assemblers.assembleDtoFromAggregate(CategoryRepresentation.class, category);
+        if (category == null) {
+            return Response.status(Response.Status.NOT_MODIFIED).build();
+        }
 
-        return Response.ok(URI.create(uriInfo.getRequestUri() + "/" + category.getEntityId()))
-                .entity(categoryRepresentation1).build();
+        CategoryRepresentation categoryRepresentation1 = fluentAssembler.assemble().aggregate(category).to(CategoryRepresentation.class);
+        return Response.ok(categoryRepresentation1).build();
     }
 
     /**
@@ -190,11 +202,13 @@ public class CategoryResource {
     @Path("/{categoryId}")
     public Response deleteCategory(@PathParam("categoryId") long categoryId) {
         Category category = categoryRepository.load(categoryId);
+
         if (category != null) {
             categoryRepository.delete(category);
         } else { // can't delete a nonexistent category
             Response.status(Response.Status.NOT_FOUND).build();
         }
+
         return Response.ok().build();
     }
 }

@@ -22,7 +22,7 @@
 	<packaging>war</packaging>
 
     <properties>
-        <hibernate.version>4.3.8.Final</hibernate.version>
+        <hibernate.version>4.2.17.Final</hibernate.version>
     </properties>
 
 	<build>
@@ -45,10 +45,10 @@
 			<groupId>org.seedstack</groupId>
 			<artifactId>web-composite</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.seedstack.functions.i18n</groupId>
-			<artifactId>i18n-function-web</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.seedstack.functions.i18n</groupId>-->
+			<!--<artifactId>i18n-function-web</artifactId>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.seedstack.functions.io</groupId>
 			<artifactId>io-function-supercsv</artifactId>

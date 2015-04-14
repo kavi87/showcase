@@ -7,18 +7,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.showcase.rest.product;
+package org.seedstack.showcase.ws.productinfo;
 
 import org.seedstack.business.api.interfaces.assembler.BaseAssembler;
 import org.seedstack.samples.ecommerce.domain.product.Product;
+import org.seedstack.showcase.rest.product.ProductRepresentation;
 
 /**
  * ProductAssembler implementation
  */
-public class ProductAssembler extends BaseAssembler<Product, ProductRepresentation> {
+public class ProductInfoAssembler extends BaseAssembler<Product, ProductInfo> {
 
     @Override
-    protected void doAssembleDtoFromAggregate(ProductRepresentation targetDto, Product sourceEntity) {
+    protected void doAssembleDtoFromAggregate(ProductInfo targetDto, Product sourceEntity) {
         targetDto.setId(sourceEntity.getEntityId());
         targetDto.setDesignation(sourceEntity.getDesignation());
         targetDto.setDetails(sourceEntity.getDetails());
@@ -29,7 +30,7 @@ public class ProductAssembler extends BaseAssembler<Product, ProductRepresentati
     }
 
     @Override
-    protected void doMergeAggregateWithDto(Product targetEntity, ProductRepresentation sourceDto) {
+    protected void doMergeAggregateWithDto(Product targetEntity, ProductInfo sourceDto) {
         targetEntity.setEntityId(sourceDto.getId());
         targetEntity.setDesignation(sourceDto.getDesignation());
         targetEntity.setDetails(sourceDto.getDetails());

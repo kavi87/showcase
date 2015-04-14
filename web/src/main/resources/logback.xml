@@ -11,7 +11,11 @@
 
 -->
 <configuration>
-    <include resource="org/seedstack/logback-defaults.xml"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level %d{ISO8601} %thread %logger{15} - %msg%n%rEx</pattern>
+        </encoder>
+    </appender>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

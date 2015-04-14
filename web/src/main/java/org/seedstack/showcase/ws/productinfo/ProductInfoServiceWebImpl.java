@@ -12,35 +12,49 @@
  */
 package org.seedstack.showcase.ws.productinfo;
 
-import com.google.inject.Inject;
+import org.seedstack.business.api.interfaces.assembler.FluentAssembler;
+import org.seedstack.samples.ecommerce.domain.product.Product;
+import org.seedstack.samples.ecommerce.domain.product.ProductRepository;
 import org.seedstack.seed.persistence.jpa.api.JpaUnit;
 import org.seedstack.seed.transaction.api.Transactional;
-import org.seedstack.showcase.productinfo.service.ProductInfoService;
 
+import javax.inject.Inject;
 import javax.jws.WebService;
 
 /**
- * The Class CalculatorServiceWebImpl.
+ * The product info WS implementation.
  *
  * @author aymen.abbes@ext.mpsa.com
  */
 @WebService(endpointInterface = "org.seedstack.showcase.ws.productinfo.ProductInfoWS", targetNamespace = "http://seedstack.org/wsdl/seed/ProductInfo/", serviceName = "ProductInfoWSService", portName = "ProductInfoWSPort")
 public class ProductInfoServiceWebImpl implements ProductInfoWS {
-
-    /**
-     * The product info service.
-     */
     @Inject
-    ProductInfoService productInfoService;
+    FluentAssembler fluentAssembler;
+
+    @Inject
+    ProductRepository productRepository;
 
     @Override
     @Transactional
     @JpaUnit("seed-ecommerce-domain")
-    public ProductInfo productInfoByID(long idProduct) throws NumberFormatException {
+    public ProductInfo productInfoByID(long idProduct) throws BadProductRequestException {
         if (idProduct <= 0) {
-            throw new NumberFormatException("Illegal Argument", new NumberFormat());
+            throw new BadProductRequestException("Error retrieving product", buildBadProductFaultInfo("Product identifier cannot be negative or 0", idProduct));
         }
 
-        return productInfoService.getProductInfoByID(idProduct);
+        Product product = productRepository.load(idProduct);
+
+        if (product == null) {
+            throw new BadProductRequestException("Error retrieving product", buildBadProductFaultInfo("Product not found", idProduct));
+        }
+
+        return fluentAssembler.assemble().aggregate(product).to(ProductInfo.class);
+    }
+
+    private BadProductRequest buildBadProductFaultInfo(String message, long idProduct) {
+        BadProductRequest faultInfo = new BadProductRequest();
+        faultInfo.setMessage(message);
+        faultInfo.setRequestedProduct(idProduct);
+        return faultInfo;
     }
 }

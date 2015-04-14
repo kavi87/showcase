@@ -15,7 +15,7 @@ import org.seedstack.samples.ecommerce.domain.category.Category;
 /**
  * CategoryAssembler.
  */
-public class CategoryAssembler extends BaseAssembler<Category, CategoryRepresentation> {
+public class CategoryRepresentationAssembler extends BaseAssembler<Category, CategoryRepresentation> {
 
     @Override
     protected void doAssembleDtoFromAggregate(CategoryRepresentation targetDto, Category sourceEntity) {

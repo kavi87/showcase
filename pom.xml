@@ -24,8 +24,8 @@
     <version>2.0.0-M1-SNAPSHOT</version>
 
     <properties>
-        <ecommerce-domain.version>2.0.0-M1-SNAPSHOT</ecommerce-domain.version>
-        <seedstack-distribution.version>15.4-M1-SNAPSHOT</seedstack-distribution.version>
+        <ecommerce-domain.version>2.0.0-M2-SNAPSHOT</ecommerce-domain.version>
+        <seedstack-distribution.version>15.4-M2-SNAPSHOT</seedstack-distribution.version>
         <javadoc.doclint.none/>
     </properties>
 

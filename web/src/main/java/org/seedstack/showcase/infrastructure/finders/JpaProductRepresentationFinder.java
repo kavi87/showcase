@@ -11,13 +11,13 @@ package org.seedstack.showcase.infrastructure.finders;
 
 import org.apache.commons.collections.MapUtils;
 import org.javatuples.Pair;
-import org.seedstack.business.api.interfaces.assembler.Assemblers;
+import org.seedstack.business.api.interfaces.assembler.FluentAssembler;
 import org.seedstack.business.api.interfaces.query.range.Range;
 import org.seedstack.business.api.interfaces.query.result.Result;
 import org.seedstack.business.jpa.interfaces.query.finder.BaseSimpleJpaFinder;
 import org.seedstack.samples.ecommerce.domain.product.Product;
-import org.seedstack.showcase.rest.product.ProductFinder;
 import org.seedstack.showcase.rest.product.ProductRepresentation;
+import org.seedstack.showcase.rest.product.ProductRepresentationFinder;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -28,12 +28,12 @@ import java.util.Map;
 /**
  * Product Finder JPA Implementation.
  */
-public class JpaProductFinder extends BaseSimpleJpaFinder<ProductRepresentation> implements ProductFinder {
+public class JpaProductRepresentationFinder extends BaseSimpleJpaFinder<ProductRepresentation> implements ProductRepresentationFinder {
 
     @Inject
     private EntityManager entityManager;
     @Inject
-    private Assemblers productAssembler;
+    private FluentAssembler fluentAssembler;
     
     private String whereClauseEnd;
 
@@ -52,7 +52,7 @@ public class JpaProductFinder extends BaseSimpleJpaFinder<ProductRepresentation>
     public ProductRepresentation findProductById(long value) {
         Product product = entityManager.find(Product.class, value);
         if (product != null) {
-			return productAssembler.assembleDtoFromAggregate(ProductRepresentation.class, product);
+			return fluentAssembler.assemble().aggregate(product).to(ProductRepresentation.class);
 		}
 		return null;
     }

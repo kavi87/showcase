@@ -11,7 +11,8 @@ package org.seedstack.showcase.rest.customer;
 
 
 import org.apache.commons.lang.StringUtils;
-import org.seedstack.business.api.interfaces.assembler.Assemblers;
+import org.seedstack.business.api.interfaces.assembler.FluentAssembler;
+import org.seedstack.business.api.interfaces.assembler.dsl.AggregateNotFoundException;
 import org.seedstack.business.api.interfaces.query.range.Range;
 import org.seedstack.business.api.interfaces.query.result.Result;
 import org.seedstack.business.api.interfaces.query.view.page.PaginatedView;
@@ -22,7 +23,15 @@ import org.seedstack.seed.persistence.jpa.api.JpaUnit;
 import org.seedstack.seed.transaction.api.Transactional;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -42,10 +51,10 @@ import java.util.Map;
 public class CustomersResource {
 
     @Inject
-    private CustomerFinder customerFinder;
+    private CustomerRepresentationFinder customerRepresentationFinder;
 
     @Inject
-    private Assemblers assemblers;
+    private FluentAssembler fluentAssembler;
 
     @Inject
     private CustomerRepository customerRepository;
@@ -71,8 +80,10 @@ public class CustomersResource {
         if (StringUtils.isNotEmpty(searchString)) {
             criteria.put("searchString", searchString);
         }
-        Result<CustomerRepresentation> result = customerFinder.findAllCustomers(Range.rangeFromPageInfo(pageIndex, pageSize), criteria);
+
+        Result<CustomerRepresentation> result = customerRepresentationFinder.findAllCustomers(Range.rangeFromPageInfo(pageIndex, pageSize), criteria);
         PaginatedView<CustomerRepresentation> paginatedView = new PaginatedView<CustomerRepresentation>(result, pageSize, pageIndex);
+
         return Response.ok(paginatedView).build();
     }
 
@@ -86,7 +97,7 @@ public class CustomersResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{customerId}")
     public Response customers(@PathParam("customerId") String customerId) {
-        CustomerRepresentation customer = customerFinder.findCustomerById(customerId);
+        CustomerRepresentation customer = customerRepresentationFinder.findCustomerById(customerId);
         if (customer != null) {
             return Response.ok(customer).build();
         } else {
@@ -107,15 +118,22 @@ public class CustomersResource {
     @Path("/{customerId}")
     public Response updateCustomer(CustomerRepresentation customerRepresentation, @PathParam("customerId") String customerId) {
         if (!customerId.equals(customerRepresentation.getId())) {
-            throw new IllegalArgumentException("Cannot change customer email");
+            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).entity("Customer email cannot be updated").build();
         }
-        Customer customer = assemblers.retrieveThenMergeAggregateWithDto(customerRepresentation, Customer.class);
+
+        Customer customer;
+        try {
+            customer = fluentAssembler.assemble().dto(customerRepresentation).to(Customer.class).fromRepository().orFail();
+        } catch (AggregateNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
         customer = customerRepository.save(customer);
 
         if (customer == null) {
             return Response.status(Status.NOT_MODIFIED).build();
         }
-        CustomerRepresentation customerRepresentation1 = assemblers.assembleDtoFromAggregate(CustomerRepresentation.class, customer);
+
+        CustomerRepresentation customerRepresentation1 = fluentAssembler.assemble().aggregate(customer).to(CustomerRepresentation.class);
         return Response.ok(customerRepresentation1).build();
     }
 
@@ -130,13 +148,12 @@ public class CustomersResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createCustomer(CustomerRepresentation customerRepresentation) throws URISyntaxException {
-        Customer customer = assemblers.retrieveOrCreateThenMergeAggregateWithDto(customerRepresentation, Customer.class);
+        Customer customer = fluentAssembler.assemble().dto(customerRepresentation).to(Customer.class).fromFactory();
 
         customerRepository.persist(customer);
 
-        URI newUri = new URI(this.uriInfo.getRequestUri().toString() + "/" + customerRepresentation.getId());
-        CustomerRepresentation customerRepresentation1 = assemblers.assembleDtoFromAggregate(CustomerRepresentation.class, customer);
-        return Response.created(newUri).entity(customerRepresentation1).build();
+        CustomerRepresentation customerRepresentation1 = fluentAssembler.assemble().aggregate(customer).to(CustomerRepresentation.class);
+        return Response.created(URI.create(this.uriInfo.getRequestUri().toString() + "/" + customerRepresentation.getId())).entity(customerRepresentation1).build();
     }
 
     /**
@@ -149,10 +166,13 @@ public class CustomersResource {
     @Path("/{customerId}")
     public Response deleteCategory(@PathParam("customerId") String customerId) {
         Customer customer = customerRepository.load(customerFactory.createCustomerId(customerId));
-        if (customer == null) {
+
+        if (customer != null) {
+            customerRepository.delete(customer);
+        } else {
             return Response.status(Status.NOT_FOUND).build();
         }
-        customerRepository.delete(customer);
+
         return Response.status(Status.OK).build();
     }
 

@@ -16,7 +16,7 @@ import org.seedstack.samples.ecommerce.domain.customer.Customer;
 /**
  * CustomerAssembler
  */
-public class CustomerAssembler extends BaseAssembler<Customer, CustomerRepresentation> {
+public class CustomerRepresentationAssembler extends BaseAssembler<Customer, CustomerRepresentation> {
 
     @Override
     protected void doAssembleDtoFromAggregate(CustomerRepresentation targetDto, Customer sourceEntity) {

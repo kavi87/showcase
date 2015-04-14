@@ -9,15 +9,15 @@
  */
 package org.seedstack.showcase.infrastructure.finders;
 
+import org.seedstack.business.api.interfaces.assembler.FluentAssembler;
 import org.seedstack.business.api.interfaces.query.range.Range;
 import org.seedstack.business.api.interfaces.query.result.Result;
 import org.seedstack.business.jpa.interfaces.query.finder.BaseSimpleJpaFinder;
 import org.seedstack.samples.ecommerce.domain.customer.Customer;
 import org.seedstack.samples.ecommerce.domain.customer.CustomerFactory;
 import org.seedstack.samples.ecommerce.domain.customer.CustomerId;
-import org.seedstack.showcase.rest.customer.CustomerAssembler;
-import org.seedstack.showcase.rest.customer.CustomerFinder;
 import org.seedstack.showcase.rest.customer.CustomerRepresentation;
+import org.seedstack.showcase.rest.customer.CustomerRepresentationFinder;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -33,12 +33,12 @@ import java.util.Map;
 /**
  * Customer Finder JPA Implementation.
  */
-public class JpaCustomerFinder extends BaseSimpleJpaFinder<CustomerRepresentation> implements CustomerFinder {
+public class JpaCustomerRepresentationFinder extends BaseSimpleJpaFinder<CustomerRepresentation> implements CustomerRepresentationFinder {
 
 	@Inject
 	private EntityManager entityManager;
 	@Inject
-	private CustomerAssembler customerAssembler;
+	private FluentAssembler fluentAssembler;
     @Inject
     private CustomerFactory customerFactory;
 
@@ -61,7 +61,7 @@ public class JpaCustomerFinder extends BaseSimpleJpaFinder<CustomerRepresentatio
 		Customer customer = entityManager.find(Customer.class, id);
 
 		if (customer != null) {
-			return customerAssembler.assembleDtoFromAggregate(customer);
+			return fluentAssembler.assemble().aggregate(customer).to(CustomerRepresentation.class);
 		}
 		return null;
 	}
@@ -118,7 +118,7 @@ public class JpaCustomerFinder extends BaseSimpleJpaFinder<CustomerRepresentatio
 
 		List<CustomerRepresentation> result = new ArrayList<CustomerRepresentation>();
 		for (Customer customer : query.getResultList()) {
-			result.add(customerAssembler.assembleDtoFromAggregate(customer));
+			result.add(fluentAssembler.assemble().aggregate(customer).to(CustomerRepresentation.class));
 		}
 		
 		return result;

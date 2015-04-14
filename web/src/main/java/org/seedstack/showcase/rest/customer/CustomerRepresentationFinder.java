@@ -7,7 +7,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.showcase.rest.category;
+package org.seedstack.showcase.rest.customer;
 
 
 import org.seedstack.business.api.interfaces.query.finder.Finder;
@@ -20,34 +20,34 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Category finder interface.
+ * CustomerFinder interface.
  */
 @Finder
 @Transactional
 @JpaUnit("seed-ecommerce-domain")
-public interface CategoryFinder {
+public interface CustomerRepresentationFinder {
 
     /**
-     * Finds a category by id.
+     * Find all customers
      *
-     * @param id the category id
-     * @return the category representation
+     * @return List<CustomerRepresentation>
      */
-    CategoryRepresentation findCategoryById(long id);
+    List<CustomerRepresentation> findAllCustomers();
 
     /**
-     * Finds all categories.
+     * Find a customer by id
      *
-     * @return the list of category
+     * @param value the customer id
+     * @return CustomerRepresentation
      */
-    List<CategoryRepresentation> findAllCategory();
+    CustomerRepresentation findCustomerById(String value);
 
     /**
-     * Finds all categories for pagination. {@literal <>}
+     * Find all customers - with pagination
      *
      * @param range    the range
      * @param criteria the criteria
-     * @return the result list of category representation
+     * @return Result<CustomerRepresentation>
      */
-    Result<CategoryRepresentation> findAllCategory(Range range, Map<String, Object> criteria);
+    Result<CustomerRepresentation> findAllCustomers(Range range, Map<String, Object> criteria);
 }

@@ -24,7 +24,7 @@ import java.util.Map;
 @Finder
 @Transactional
 @JpaUnit("seed-ecommerce-domain")
-public interface ProductFinder {
+public interface ProductRepresentationFinder {
 	/**
 	 * Find all products
 	 * @return List<ProductRepresentation>
