@@ -9,7 +9,8 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -34,66 +35,68 @@
         <module>web</module>
     </modules>
 
-     <build>
-         <plugins>
-             <plugin>
-                 <groupId>com.mycila</groupId>
-                 <artifactId>license-maven-plugin</artifactId>
-                 <executions>
-                     <execution>
-                         <id>check-license-header</id>
-                         <phase>none</phase>
-                     </execution>
-                 </executions>
-             </plugin>
-             <plugin>
-                 <groupId>org.codehaus.mojo</groupId>
-                 <artifactId>license-maven-plugin</artifactId>
-                 <executions>
-                     <execution>
-                         <id>check-license-compliance</id>
-                         <phase>none</phase>
-                     </execution>
-                 </executions>
-             </plugin>
-             <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-dependency-plugin</artifactId>
-                 <executions>
-                     <execution>
-                         <phase>package</phase>
-                         <goals><goal>copy</goal></goals>
-                         <configuration>
-                             <artifactItems>
-                                 <artifactItem>
-                                     <groupId>com.github.jsimone</groupId>
-                                     <artifactId>webapp-runner</artifactId>
-                                     <version>7.0.57.2</version>
-                                     <destFileName>webapp-runner.jar</destFileName>
-                                 </artifactItem>
-                             </artifactItems>
-                         </configuration>
-                     </execution>
-                 </executions>
-             </plugin>
-             <plugin>
-                 <artifactId>maven-javadoc-plugin</artifactId>
-                 <version>${maven-javadoc-plugin.version}</version>
-                 <executions>
-                     <execution>
-                         <id>attach-javadoc</id>
-                         <phase>package</phase>
-                         <goals>
-                             <goal>jar</goal>
-                         </goals>
-                         <configuration>
-                             <additionalparam>${javadoc.doclint.none}</additionalparam>
-                         </configuration>
-                     </execution>
-                 </executions>
-             </plugin>
-         </plugins>
-     </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-license-header</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-license-compliance</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.github.jsimone</groupId>
+                                    <artifactId>webapp-runner</artifactId>
+                                    <version>7.0.57.2</version>
+                                    <destFileName>webapp-runner.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalparam>${javadoc.doclint.none}</additionalparam>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <profile>

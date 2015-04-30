@@ -9,58 +9,61 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.seedstack.samples</groupId>
-		<artifactId>showcase</artifactId>
-		<version>2.0.0-M2-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.seedstack.samples</groupId>
+        <artifactId>showcase</artifactId>
+        <version>2.0.0-M2-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>showcase-web</artifactId>
-	<packaging>war</packaging>
+    <artifactId>showcase-web</artifactId>
+    <packaging>war</packaging>
 
     <properties>
         <hibernate.version>4.2.17.Final</hibernate.version>
     </properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>8.1.15.v20140411</version>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.15.v20140411</version>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.seedstack.samples</groupId>
             <artifactId>showcase-app</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-			<groupId>org.seedstack</groupId>
-			<artifactId>web-composite</artifactId>
-		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>org.seedstack.functions.i18n</groupId>-->
-			<!--<artifactId>i18n-function-web</artifactId>-->
-		<!--</dependency>-->
-		<dependency>
-			<groupId>org.seedstack.functions.io</groupId>
-			<artifactId>io-function-supercsv</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.seedstack.seed</groupId>
-			<artifactId>seed-ws-support-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
+            <groupId>org.seedstack</groupId>
+            <artifactId>web-composite</artifactId>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.seedstack.functions.i18n</groupId>
+            <artifactId>i18n-function-web</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>org.seedstack.functions.io</groupId>
+            <artifactId>io-function-supercsv</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.seedstack.seed</groupId>
+            <artifactId>seed-ws-support-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+
+        <!-- Persistence -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -81,10 +84,11 @@
             <artifactId>hsqldb</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.seedstack.seed</groupId>
-			<artifactId>seed-unittest-support</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.seedstack.seed</groupId>
+            <artifactId>seed-unittest-support</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
