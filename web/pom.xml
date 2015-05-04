@@ -46,14 +46,6 @@
             <groupId>org.seedstack</groupId>
             <artifactId>web-composite</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>org.seedstack.functions.i18n</groupId>
-            <artifactId>i18n-function-web</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>org.seedstack.functions.io</groupId>
-            <artifactId>io-function-supercsv</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.seedstack.seed</groupId>
             <artifactId>seed-ws-support-web</artifactId>
