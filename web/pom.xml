@@ -48,6 +48,10 @@
             <type>pom</type>
         </dependency>
         <dependency>
+            <groupId>org.seedstack.functions.w20</groupId>
+            <artifactId>w20-function-web</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.seedstack.seed</groupId>
             <artifactId>seed-ws-support-web</artifactId>
         </dependency>

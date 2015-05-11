@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.seedstack</groupId>
         <artifactId>parent</artifactId>
-        <version>2.0.0-M2-SNAPSHOT</version>
+        <version>2.0.0-M2</version>
     </parent>
 
     <packaging>pom</packaging>
@@ -26,7 +26,7 @@
 
     <properties>
         <ecommerce-domain.version>2.0.0-M2-SNAPSHOT</ecommerce-domain.version>
-        <seedstack-distribution.version>15.4-M2-SNAPSHOT</seedstack-distribution.version>
+        <seedstack-distribution.version>15.7-M2-SNAPSHOT</seedstack-distribution.version>
         <javadoc.doclint.none/>
     </properties>
 
