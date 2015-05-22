@@ -1,4 +1,5 @@
-# SeedStack showcase sample [![Build status](https://travis-ci.org/seedstack/showcase.svg?branch=master)](https://travis-ci.org/seedstack/showcase) [![Stories in Ready](https://badge.waffle.io/seedstack/showcase.png?label=ready&title=Ready)](https://waffle.io/seedstack/showcase)
+# SeedStack showcase sample 
+[![Build status](https://travis-ci.org/seedstack/showcase.svg?branch=master)](https://travis-ci.org/seedstack/showcase)
 
 Showcase based on the [e-commerce domain model](https://github.com/seedstack/ecommerce-domain-sample), demonstrating basic SeedStack features.
 
