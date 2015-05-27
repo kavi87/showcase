@@ -123,7 +123,7 @@ public class CustomersResource {
 
         Customer customer;
         try {
-            customer = fluentAssembler.assemble().dto(customerRepresentation).to(Customer.class).fromRepository().orFail();
+            customer = fluentAssembler.merge(customerRepresentation).into(Customer.class).fromRepository().orFail();
         } catch (AggregateNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -133,7 +133,7 @@ public class CustomersResource {
             return Response.status(Status.NOT_MODIFIED).build();
         }
 
-        CustomerRepresentation customerRepresentation1 = fluentAssembler.assemble().aggregate(customer).to(CustomerRepresentation.class);
+        CustomerRepresentation customerRepresentation1 = fluentAssembler.assemble(customer).to(CustomerRepresentation.class);
         return Response.ok(customerRepresentation1).build();
     }
 
@@ -148,11 +148,11 @@ public class CustomersResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createCustomer(CustomerRepresentation customerRepresentation) throws URISyntaxException {
-        Customer customer = fluentAssembler.assemble().dto(customerRepresentation).to(Customer.class).fromFactory();
+        Customer customer = fluentAssembler.merge(customerRepresentation).into(Customer.class).fromFactory();
 
         customerRepository.persist(customer);
 
-        CustomerRepresentation customerRepresentation1 = fluentAssembler.assemble().aggregate(customer).to(CustomerRepresentation.class);
+        CustomerRepresentation customerRepresentation1 = fluentAssembler.assemble(customer).to(CustomerRepresentation.class);
         return Response.created(URI.create(this.uriInfo.getRequestUri().toString() + "/" + customerRepresentation.getId())).entity(customerRepresentation1).build();
     }
 

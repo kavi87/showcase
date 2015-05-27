@@ -39,7 +39,7 @@ public class JpaCategoryfinder extends BaseSimpleJpaFinder<CategoryRepresentatio
 	public CategoryRepresentation findCategoryById(long value) {
 		Category category = entityManager.find(Category.class, value);
 		if (category != null){
-			return fluentAssembler.assemble().aggregate(category).to(CategoryRepresentation.class);
+			return fluentAssembler.assemble(category).to(CategoryRepresentation.class);
 		}
 		return null;
 	}

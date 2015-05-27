@@ -61,7 +61,7 @@ public class JpaCustomerRepresentationFinder extends BaseSimpleJpaFinder<Custome
 		Customer customer = entityManager.find(Customer.class, id);
 
 		if (customer != null) {
-			return fluentAssembler.assemble().aggregate(customer).to(CustomerRepresentation.class);
+			return fluentAssembler.assemble(customer).to(CustomerRepresentation.class);
 		}
 		return null;
 	}
@@ -118,7 +118,7 @@ public class JpaCustomerRepresentationFinder extends BaseSimpleJpaFinder<Custome
 
 		List<CustomerRepresentation> result = new ArrayList<CustomerRepresentation>();
 		for (Customer customer : query.getResultList()) {
-			result.add(fluentAssembler.assemble().aggregate(customer).to(CustomerRepresentation.class));
+			result.add(fluentAssembler.assemble(customer).to(CustomerRepresentation.class));
 		}
 		
 		return result;

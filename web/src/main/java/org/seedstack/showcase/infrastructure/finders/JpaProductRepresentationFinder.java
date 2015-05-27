@@ -52,7 +52,7 @@ public class JpaProductRepresentationFinder extends BaseSimpleJpaFinder<ProductR
     public ProductRepresentation findProductById(long value) {
         Product product = entityManager.find(Product.class, value);
         if (product != null) {
-			return fluentAssembler.assemble().aggregate(product).to(ProductRepresentation.class);
+			return fluentAssembler.assemble(product).to(ProductRepresentation.class);
 		}
 		return null;
     }
