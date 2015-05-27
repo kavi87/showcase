@@ -25,16 +25,7 @@ import org.seedstack.showcase.rest.product.ProductRepresentation;
 import org.seedstack.showcase.rest.product.ProductRepresentationFinder;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -42,6 +33,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.seedstack.business.api.interfaces.assembler.AssemblerTypes.MODEL_MAPPER;
 
 /**
  * A REST resource to manage categories.
@@ -151,11 +144,11 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response add(CategoryRepresentation categoryRepresentation) {
-        Category category = fluentAssembler.merge(categoryRepresentation).into(Category.class).fromFactory();
+        Category category = fluentAssembler.merge(categoryRepresentation).with(MODEL_MAPPER).into(Category.class).fromFactory();
         categoryRepository.persistCategory(category);
 
         CategoryRepresentation categoryRepresentation1;
-        categoryRepresentation1 = fluentAssembler.assemble(category).to(CategoryRepresentation.class);
+        categoryRepresentation1 = fluentAssembler.assemble(category).with(MODEL_MAPPER).to(CategoryRepresentation.class);
 
         return Response.created(URI.create(uriInfo.getRequestUri() + "/" + category.getEntityId())).entity(categoryRepresentation1).build();
     }
@@ -178,7 +171,7 @@ public class CategoryResource {
 
         Category category;
         try {
-            category = fluentAssembler.merge(categoryRepresentation).into(Category.class).fromRepository().orFail();
+            category = fluentAssembler.merge(categoryRepresentation).with(MODEL_MAPPER).into(Category.class).fromRepository().orFail();
         } catch (AggregateNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -188,7 +181,7 @@ public class CategoryResource {
             return Response.status(Response.Status.NOT_MODIFIED).build();
         }
 
-        CategoryRepresentation categoryRepresentation1 = fluentAssembler.assemble(category).to(CategoryRepresentation.class);
+        CategoryRepresentation categoryRepresentation1 = fluentAssembler.assemble(category).with(MODEL_MAPPER).to(CategoryRepresentation.class);
         return Response.ok(categoryRepresentation1).build();
     }
 

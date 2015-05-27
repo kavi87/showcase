@@ -42,4 +42,17 @@ public class ProductionRepresentationAssemblingIT {
         Assertions.assertThat(representation.getSummary()).isEqualTo("summary");
         Assertions.assertThat(representation.getCategoryId()).isEqualTo(3L);
     }
+
+    @Test
+    public void testMergingWithModelMapper() {
+        ProductRepresentation representation = new ProductRepresentation(2L, "destination2", "summary2", "details2", "http://img2.png", 24.90, 3L);
+
+        Product product = factory.createProduct(1L, "destination", "summary", "details", "http://img.png", 14.90, 3L);
+        fluently.merge(representation).into(product);
+
+        Assertions.assertThat(product.getEntityId()).isEqualTo(1L); // should not have changed (works because setEntityId() is in visibility package)
+        Assertions.assertThat(product.getDesignation()).isEqualTo("destination2");
+        Assertions.assertThat(product.getSummary()).isEqualTo("summary2");
+        Assertions.assertThat(product.getCategoryId()).isEqualTo(3L);
+    }
 }

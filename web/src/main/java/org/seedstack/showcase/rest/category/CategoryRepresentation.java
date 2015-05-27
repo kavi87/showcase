@@ -10,12 +10,15 @@
 package org.seedstack.showcase.rest.category;
 
 
+import org.seedstack.business.api.interfaces.assembler.DtoOf;
 import org.seedstack.business.api.interfaces.assembler.MatchingEntityId;
 import org.seedstack.business.api.interfaces.assembler.MatchingFactoryParameter;
+import org.seedstack.samples.ecommerce.domain.category.Category;
 
 /**
  * CategoryRepresentation.
  */
+@DtoOf(Category.class) // Required as there is no assembler implementation
 public class CategoryRepresentation {
 
     private Long id;
