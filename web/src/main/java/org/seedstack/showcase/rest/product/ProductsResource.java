@@ -11,6 +11,7 @@ package org.seedstack.showcase.rest.product;
 
 import org.apache.commons.lang.StringUtils;
 import org.javatuples.Pair;
+import org.seedstack.business.api.interfaces.assembler.AssemblerTypes;
 import org.seedstack.business.api.interfaces.assembler.FluentAssembler;
 import org.seedstack.business.api.interfaces.assembler.dsl.AggregateNotFoundException;
 import org.seedstack.business.api.interfaces.query.range.Range;
@@ -134,14 +135,14 @@ public class ProductsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{productId: [0-9]+}")
-    public Response updateproduct(ProductRepresentation productRepresentation, @PathParam("productId") long productId) {
+    public Response updateProduct(ProductRepresentation productRepresentation, @PathParam("productId") long productId) {
         if (productRepresentation.getId() != productId) {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).entity("Product identifier cannot be updated").build();
         }
 
         Product product;
         try {
-            product = fluentAssembler.assemble().dto(productRepresentation).to(Product.class).fromRepository().orFail();
+            product = fluentAssembler.merge(productRepresentation).into(Product.class).fromRepository().orFail();
         } catch (AggregateNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -152,7 +153,7 @@ public class ProductsResource {
                     productRepresentation.getId());
             return Response.status(Status.NOT_MODIFIED).build();
         }
-        ProductRepresentation productRepresentation1 = fluentAssembler.assemble().aggregate(product).to(ProductRepresentation.class);
+        ProductRepresentation productRepresentation1 = fluentAssembler.assemble(product).with(AssemblerTypes.MODEL_MAPPER).to(ProductRepresentation.class);
         return Response.ok(productRepresentation1).build();
     }
 
@@ -170,7 +171,7 @@ public class ProductsResource {
     public Response createProduct(ProductRepresentation productRepresentation,
                                   @Context UriInfo uriInfo) throws URISyntaxException {
 
-        Product product = fluentAssembler.assemble().dto(productRepresentation).to(Product.class).fromFactory();
+        Product product = fluentAssembler.merge(productRepresentation).into(Product.class).fromFactory();
         productRepository.persistProduct(product);
 
         if (product == null) {
@@ -179,7 +180,7 @@ public class ProductsResource {
             return Response.status(Status.NOT_ACCEPTABLE).build();
         }
 
-        ProductRepresentation productRepresentation1 = fluentAssembler.assemble().aggregate(product).to(ProductRepresentation.class);
+        ProductRepresentation productRepresentation1 = fluentAssembler.assemble(product).to(ProductRepresentation.class);
         return Response.created(URI.create(uriInfo.getRequestUri().toString() + "/" + productRepresentation1.getId())).entity(productRepresentation1).build();
     }
 

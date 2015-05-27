@@ -151,11 +151,11 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response add(CategoryRepresentation categoryRepresentation) {
-        Category category = fluentAssembler.assemble().dto(categoryRepresentation).to(Category.class).fromFactory();
+        Category category = fluentAssembler.merge(categoryRepresentation).into(Category.class).fromFactory();
         categoryRepository.persistCategory(category);
 
         CategoryRepresentation categoryRepresentation1;
-        categoryRepresentation1 = fluentAssembler.assemble().aggregate(category).to(CategoryRepresentation.class);
+        categoryRepresentation1 = fluentAssembler.assemble(category).to(CategoryRepresentation.class);
 
         return Response.created(URI.create(uriInfo.getRequestUri() + "/" + category.getEntityId())).entity(categoryRepresentation1).build();
     }
@@ -178,7 +178,7 @@ public class CategoryResource {
 
         Category category;
         try {
-            category = fluentAssembler.assemble().dto(categoryRepresentation).to(Category.class).fromRepository().orFail();
+            category = fluentAssembler.merge(categoryRepresentation).into(Category.class).fromRepository().orFail();
         } catch (AggregateNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -188,7 +188,7 @@ public class CategoryResource {
             return Response.status(Response.Status.NOT_MODIFIED).build();
         }
 
-        CategoryRepresentation categoryRepresentation1 = fluentAssembler.assemble().aggregate(category).to(CategoryRepresentation.class);
+        CategoryRepresentation categoryRepresentation1 = fluentAssembler.assemble(category).to(CategoryRepresentation.class);
         return Response.ok(categoryRepresentation1).build();
     }
 

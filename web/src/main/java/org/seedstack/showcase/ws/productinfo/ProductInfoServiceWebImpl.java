@@ -48,7 +48,7 @@ public class ProductInfoServiceWebImpl implements ProductInfoWS {
             throw new BadProductRequestException("Error retrieving product", buildBadProductFaultInfo("Product not found", idProduct));
         }
 
-        return fluentAssembler.assemble().aggregate(product).to(ProductInfo.class);
+        return fluentAssembler.assemble(product).to(ProductInfo.class);
     }
 
     private BadProductRequest buildBadProductFaultInfo(String message, long idProduct) {
