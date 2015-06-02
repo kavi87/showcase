@@ -26,7 +26,7 @@
 
     <properties>
         <ecommerce-domain.version>2.0.0-M3-SNAPSHOT</ecommerce-domain.version>
-        <seedstack-distribution.version>15.7-M2</seedstack-distribution.version>
+        <seedstack-distribution.version>15.7-M3</seedstack-distribution.version>
         <javadoc.doclint.none/>
     </properties>
 
@@ -102,20 +102,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.seedstack.business</groupId>
-                <artifactId>business-bom</artifactId>
-                <version>2.0.0-M3-SNAPSHOT</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.seedstack.seed</groupId>
-                <artifactId>seed-bom</artifactId>
-                <version>2.0.0-M3</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.seedstack</groupId>
                 <artifactId>seedstack-bom</artifactId>
