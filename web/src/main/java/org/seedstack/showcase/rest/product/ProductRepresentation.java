@@ -36,13 +36,13 @@ public class ProductRepresentation {
     /**
      * ProductRepresentation Constructor.
      *
-     * @param id the id
+     * @param id          the id
      * @param designation the designation
-     * @param summary the summary
-     * @param details the details
-     * @param picture the picture
-     * @param price the price
-     * @param categoryId the categoryId
+     * @param summary     the summary
+     * @param details     the details
+     * @param picture     the picture
+     * @param price       the price
+     * @param categoryId  the categoryId
      */
     public ProductRepresentation(Long id, String designation, String summary, String details, String picture,
                                  Double price, Long categoryId) {
@@ -59,13 +59,13 @@ public class ProductRepresentation {
     /**
      * ProductRepresentation Constructor.
      *
-     * @param id the id
-     * @param designation the designation
-     * @param summary the summary
-     * @param details the details
-     * @param picture the picture
-     * @param price the price
-     * @param categoryId the categoryId
+     * @param id           the id
+     * @param designation  the designation
+     * @param summary      the summary
+     * @param details      the details
+     * @param picture      the picture
+     * @param price        the price
+     * @param categoryId   the categoryId
      * @param categoryName the categoryName
      */
     @SuppressWarnings("unchecked")
@@ -82,10 +82,11 @@ public class ProductRepresentation {
         this.categoryName = categoryName;
     }
 
-	/**
-	 * get id
-	 * @return Long
-	 */
+    /**
+     * get id
+     *
+     * @return Long
+     */
     @MatchingFactoryParameter(index = 0)
     @MatchingEntityId
     public Long getId() {
@@ -94,15 +95,18 @@ public class ProductRepresentation {
 
     /**
      * Sets the id.
+     *
      * @param id the Id to set
      */
     public void setId(Long id) {
         this.id = id;
     }
-	/**
-	 * get designation
-	 * @return String
-	 */
+
+    /**
+     * get designation
+     *
+     * @return String
+     */
     @MatchingFactoryParameter(index = 1)
     public String getDesignation() {
         return designation;
@@ -110,16 +114,18 @@ public class ProductRepresentation {
 
     /**
      * Sets the designation.
+     *
      * @param designation the Designation to set
      */
     public void setDesignation(String designation) {
         this.designation = designation;
     }
 
-	/**
-	 * get summary
-	 * @return String
-	 */
+    /**
+     * get summary
+     *
+     * @return String
+     */
     @MatchingFactoryParameter(index = 2)
     public String getSummary() {
         return summary;
@@ -127,16 +133,18 @@ public class ProductRepresentation {
 
     /**
      * Sets the summary.
+     *
      * @param summary the Summary to set
      */
     public void setSummary(String summary) {
         this.summary = summary;
     }
 
-	/**
-	 * get details
-	 * @return String
-	 */
+    /**
+     * get details
+     *
+     * @return String
+     */
     @MatchingFactoryParameter(index = 3)
     public String getDetails() {
         return details;
@@ -144,16 +152,18 @@ public class ProductRepresentation {
 
     /**
      * Sets the details.
+     *
      * @param details the Details to set
      */
     public void setDetails(String details) {
         this.details = details;
     }
 
-	/**
-	 * get picture
-	 * @return String
-	 */
+    /**
+     * get picture
+     *
+     * @return String
+     */
     @MatchingFactoryParameter(index = 4)
     public String getPicture() {
         return picture;
@@ -161,16 +171,18 @@ public class ProductRepresentation {
 
     /**
      * Sets the picture.
+     *
      * @param picture the Picture to set
      */
     public void setPicture(String picture) {
         this.picture = picture;
     }
 
-	/**
-	 * get price
-	 * @return Double
-	 */
+    /**
+     * get price
+     *
+     * @return Double
+     */
     @MatchingFactoryParameter(index = 5)
     public Double getPrice() {
         return price;
@@ -178,16 +190,18 @@ public class ProductRepresentation {
 
     /**
      * Sets the price.
+     *
      * @param price the Price to set
      */
     public void setPrice(Double price) {
         this.price = price;
     }
 
-	/**
-	 * get Category id
-	 * @return Long
-	 */
+    /**
+     * get Category id
+     *
+     * @return Long
+     */
     @MatchingFactoryParameter(index = 6)
     public Long getCategoryId() {
         return categoryId;
@@ -195,22 +209,25 @@ public class ProductRepresentation {
 
     /**
      * Sets the categoryId.
+     *
      * @param categoryId the CategoryId to set
      */
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
-	/**
-	 * get Category name
-	 * @return String
-	 */
+    /**
+     * get Category name
+     *
+     * @return String
+     */
     public String getCategoryName() {
         return categoryName;
     }
 
     /**
      * Sets the categoryName.
+     *
      * @param categoryName the CategoryName to set
      */
     public void setCategoryName(String categoryName) {

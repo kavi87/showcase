@@ -9,13 +9,13 @@
 #
 
 ####################################################################
-# web security
+# Web security
 ####################################################################
 [org.seedstack.seed.security.urls]
 /** = authcBasic
 
 ####################################################################
-# web-services
+# Web-services
 ####################################################################
 [org.seedstack.seed.ws]
 endpoints = ProductInfoWS
@@ -27,3 +27,15 @@ endpoint.ProductInfoWS.enable-mtom = true
 [ws.security]
 usernametoken.username = ws-username 
 usernametoken.password = ws-password
+
+####################################################################
+# Data import (Use for mocking data in default profile)
+####################################################################
+
+# Default value
+#[org.seedstack.seed.core]
+# data-initialization = auto
+
+# disable mocks in PROD profile
+[org.seedstack.seed.core<PROD>]
+data-initialization = none
